@@ -93,3 +93,12 @@ def lambda_handler(event, context):
         artist_df.to_csv(artist_buffer)
         artist_content = artist_buffer.getvalue()
         s3.put_object(Bucket=Bucket, Key=artist_key, Body=artist_content)
+
+    s3_resource = boto3.resource('s3')
+    for key in spotify_keys:
+        copy_source = {
+            'Bucket':Bucket,
+            'Key':key
+        }
+        s3_resource.meta.client.copy(copy_source, Bucket, 'raw_data/processed/' + key.split("/")[-1])
+        s3_resource.Object(Bucket, key).delete()
