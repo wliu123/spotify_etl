@@ -28,3 +28,27 @@ create or replace table spotify_load_db.public.songs (
     album_id STRING,
     artist_id STRING
 );
+
+create or replace file format spotify_load_db.file_formats.csv_file 
+    type = csv
+    field_delimiter = ','
+    skip_header = 1
+    null_if = ('NULL', 'null')
+    empty_field_as_null = True;
+
+create or replace storage integration s3_init
+    type = external_stage
+    storage_provider = s3
+    enabled = true
+    storage_aws_role_arn = 'arn:aws:iam::747754894696:role/snowflake-s3-connection'
+    storage_allowed_locations = ('s3://spotify-etl-proj-wl/transformed_data/')
+    comment = 'creating connection to s3';
+
+desc integration s3_init;
+
+create or replace stage spotify_load_db.external_stages.spoti_stage
+    url = 's3://spotify-etl-proj-wl/transformed_data/'
+    storage_integration = s3_init
+    file_format = spotify_load_db.file_formats.csv_file;
+
+list @spotify_load_db.external_stages.spoti_stage
