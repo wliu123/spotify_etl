@@ -1,0 +1,30 @@
+create database spotify_load_db
+
+create or replace schema pipelines;
+create or replace schema external_stages;
+create or replace schema file_formats;
+
+create or replace table spotify_load_db.public.album (
+    album_id INT,
+    album_name STRING,
+    album_release_date DATE,
+    album_total_tracks INT,
+    album_url STRING
+);
+
+create or replace table spotify_load_db.public.artist (
+    artist_id INT,
+    artist_name STRING,
+    external_url STRING
+);
+
+create or replace table spotify_load_db.public.songs (
+    song_id INT,
+    song_name STRING,
+    duration_ms INT,
+    url STRING,
+    popularity INT,
+    song_added DATETIME,
+    album_id STRING,
+    artist_id STRING
+);
