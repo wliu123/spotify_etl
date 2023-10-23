@@ -67,11 +67,13 @@ def lambda_handler(event, context):
         #Album Dataframe
         album_df = pd.DataFrame.from_dict(album_list)
         album_df = album_df.drop_duplicates(subset=['album_id'])
+        album_df['album_name'] = album_df['album_name'].replace(',', ' ', regex=True)
         #Artist Dataframe
         artist_df = pd.DataFrame.from_dict(artist_list)
         artist_df = artist_df.drop_duplicates(subset=['artist_id'])
         #Song Dataframe
         song_df = pd.DataFrame.from_dict(song_list)
+        song_df['song_name'] = song_df['song_name'].replace(',', ' ', regex=True)
         
         album_df['album_release_date'] = pd.to_datetime(album_df['album_release_date'])
         song_df['song_added'] = pd.to_datetime(song_df['song_added'])
@@ -93,7 +95,7 @@ def lambda_handler(event, context):
         artist_df.to_csv(artist_buffer, index=False)
         artist_content = artist_buffer.getvalue()
         s3.put_object(Bucket=Bucket, Key=artist_key, Body=artist_content)
-
+        
     s3_resource = boto3.resource('s3')
     for key in spotify_keys:
         copy_source = {
