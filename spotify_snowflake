@@ -74,3 +74,8 @@ create or replace pipe spotify_load_db.pipelines.song_pipe
 desc pipe spotify_load_db.pipelines.album_pipe;
 desc pipe spotify_load_db.pipelines.artist_pipe;
 desc pipe spotify_load_db.pipelines.song_pipe;
+
+-- for testing after triggering extraction lambda in aws
+select * from spotify_load_db.public.album;
+select * from spotify_load_db.public.artist;
+select * from spotify_load_db.public.songs;
