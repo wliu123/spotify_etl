@@ -51,4 +51,26 @@ create or replace stage spotify_load_db.external_stages.spoti_stage
     storage_integration = s3_init
     file_format = spotify_load_db.file_formats.csv_file;
 
-list @spotify_load_db.external_stages.spoti_stage
+list @spotify_load_db.external_stages.spoti_stage;
+
+create or replace pipe spotify_load_db.pipelines.album_pipe
+    auto_ingest = TRUE
+    as
+    copy into spotify_load_db.public.album
+    from @spotify_load_db.external_stages.spoti_stage/album_data/;
+
+create or replace pipe spotify_load_db.pipelines.artist_pipe
+    auto_ingest = TRUE
+    as
+    copy into spotify_load_db.public.artist
+    from @spotify_load_db.external_stages.spoti_stage/artist_data/;
+
+create or replace pipe spotify_load_db.pipelines.song_pipe
+    auto_ingest = TRUE
+    as
+    copy into spotify_load_db.public.songs
+    from @spotify_load_db.external_stages.spoti_stage/songs_data/;
+
+desc pipe spotify_load_db.pipelines.album_pipe;
+desc pipe spotify_load_db.pipelines.artist_pipe;
+desc pipe spotify_load_db.pipelines.song_pipe;
